@@ -1,7 +1,6 @@
 "use server";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
-import { TransactionStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 const serializeTransaction = (obj) => {
@@ -50,7 +49,9 @@ export async function updateDefaultAccount(accountId) {
 export async function getAccountWithTransaction(accountId) {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
-  const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
 
   if (!user) {
     throw new Error("User not found");
@@ -74,4 +75,64 @@ export async function getAccountWithTransaction(accountId) {
     ...serializeTransaction(account),
     transactions: account.transactions.map(serializeTransaction),
   };
+}
+
+export async function bulkDeleteTransactions(transactionIds) {
+  try {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+    const user = await db.user.findUnique({
+      where: { clerkUserId: userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const transaction = await db.transaction.findMany({
+      where: {
+        id: { in: transactionIds },
+        userId: user.id,
+      },
+    });
+
+    const accountBalanceChanges = transaction.reduce((acc, transaction) => {
+      const change =
+        transaction.type === "EXPENSE"
+          ? transaction.amount
+          : -transaction.amount;
+
+      acc[transaction.accountId] = (acc[transaction.accountId] || 0) + change;
+      return acc;
+    }, {});
+
+    // delete transaction and update account balances in a transaction
+    await db.$transaction(async (tx) => {
+      // Delete transaction
+      await tx.transaction.deleteMany({
+        where: {
+          id: { in: transactionIds },
+          userId: user.id,
+        },
+      });
+
+      for (const [accountId, balanceChange] of object.entries(
+        accountBalanceChanges
+      )) {
+        await tx.account.update({
+          where: { id: accountId },
+          data: {
+            balance: {
+              increment: balanceChange,
+            },
+          },
+        });
+      }
+    });
+
+    revalidatePath("/dashboard");
+    revalidatePath("/account/[id]");
+    return { sucess: true };
+  } catch (error) {
+    return { sucess: false, error: error.message };
+  }
 }
