@@ -21,11 +21,12 @@ import { Switch } from "@/components/ui/switch";
 import useFetch from "@/hooks/use-fetch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Receipt } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import ReceiptScanner from "./recipt-scanner";
 
 const AddTransactionForm = ({ accounts, categories }) => {
   const router = useRouter();
@@ -69,21 +70,39 @@ const AddTransactionForm = ({ accounts, categories }) => {
   };
 
   useEffect(() => {
-    console.log("Transaction Result:", JSON.stringify(transactionResult, null, 2));
-  if (transactionResult?.sucess && !transactionLoading) {
-    toast.success("Transaction created successfully");
-    reset();
-    router.push(`/account/${transactionResult.data.accountId}`);
-  }
-}, [transactionResult, transactionLoading]);
+    console.log(
+      "Transaction Result:",
+      JSON.stringify(transactionResult, null, 2)
+    );
+    if (transactionResult?.sucess && !transactionLoading) {
+      toast.success("Transaction created successfully");
+      reset();
+      router.push(`/account/${transactionResult.data.accountId}`);
+    }
+  }, [transactionResult, transactionLoading]);
 
   const filteredCategories = categories.filter(
     (category) => category.type === type
   );
 
+  const handleScanComplete = (scannedData) => {
+    console.log(scannedData);
+    if (scannedData) {
+      setValue("amount", scannedData.amount.toString());
+      setValue("date", new Date(scannedData.date));
+      if (scannedData.description) {
+        setValue("description", scannedData.description);
+      }
+      if (scannedData.category) {
+        setValue("category", scannedData.category);
+      }
+    }
+  };
+
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       {/* AI Recipt Scanner */}
+      <ReceiptScanner onScanComplete={handleScanComplete} />
 
       <div className="space-y-2">
         <label className="text-sm font-medium">Type</label>
@@ -155,6 +174,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
       <div className="space-y-2">
         <label className="text-sm font-medium">Category</label>
         <Select
+         value={watch("category")} 
           onValueChange={(value) => setValue("category", value)}
           defaultValue={getValues("category")}
         >
@@ -224,9 +244,7 @@ const AddTransactionForm = ({ accounts, categories }) => {
         </div>
         <Switch
           checked={isRecurring}
-          onCheckedChange={(checked) =>
-            setValue("isRecurring", checked)
-          }
+          onCheckedChange={(checked) => setValue("isRecurring", checked)}
         />
       </div>
 
