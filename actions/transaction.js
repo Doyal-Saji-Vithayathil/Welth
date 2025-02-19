@@ -67,7 +67,7 @@ export async function createTransaction(data) {
           userId: user.id,
           nextRecurringDate:
             data.isRecurring && data.recurringInterval
-              ? calaculateNextRecurringDate(data.date, data.recurringInterval)
+              ? calculateNextRecurringDate(data.date, data.recurringInterval)
               : null,
         },
       });
@@ -89,7 +89,7 @@ export async function createTransaction(data) {
   }
 }
 // helper function to calaculate next recurring data
-function calaculateNextRecurringDate(startDate, interval) {
+function calculateNextRecurringDate(startDate, interval) {
   const date = new Date(startDate);
   switch (interval) {
     case "DAILY":
