@@ -1,5 +1,6 @@
 import arcjet, { createMiddleware, detectBot, shield } from "@arcjet/next";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 // Define protected routes
 const isProtectedRoute = createRouteMatcher([
@@ -28,9 +29,12 @@ const clerk = clerkMiddleware(async (auth, req) => {
 
     // If user is not authenticated and trying to access a protected route
     if (!userId && isProtectedRoute(req)) {
-      const { redirectToSignIn } = await auth();
-      return redirectToSignIn();
+      const signInUrl = new URL("/sign-in", req.url);
+      signInUrl.searchParams.set("redirect_url", req.url); // Redirect back after login
+
+      return NextResponse.redirect(signInUrl);
     }
+    return NextResponse.next();
   } catch (error) {
     console.error("Error during Clerk authentication:", error);
     // You can choose to redirect to a custom error page or handle it as needed
