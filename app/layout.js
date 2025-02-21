@@ -3,6 +3,8 @@ import "./globals.css";
 import Header from "@/components/header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +30,8 @@ export default function RootLayout({ children }) {
               <p> Made by Doyal Saji </p>
             </div>
           </footer>
+          <SpeedInsights />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
