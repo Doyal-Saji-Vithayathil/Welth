@@ -40,13 +40,17 @@ Steps to Run Locally
 2. Install dependencies:
    npm install
    
-3. Set up environment variables (`.env.local`):
-   
+3. Set up environment variables (`.env.local`):   
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   
    DATABASE_URL=your_database_url
+   
    CLERK_SECRET_KEY=your_clerk_secret_key
+   
    INNGEST_API_KEY=your_inngest_api_key
+   
    ARCJET_SECRET_KEY=your_arcjet_secret_key
    
 5. Run database migrations:  
