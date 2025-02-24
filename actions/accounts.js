@@ -131,8 +131,8 @@ export async function bulkDeleteTransactions(transactionIds) {
 
     revalidatePath("/dashboard");
     revalidatePath("/account/[id]");
-    return { sucess: true };
+    return { success: true };
   } catch (error) {
-    return { sucess: false, error: error.message };
+    return { success: false, error: error.message };
   }
 }
