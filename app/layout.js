@@ -12,25 +12,25 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-   
-      <html lang="en">
-        <body className={`${inter.className}`}>
-        <ClerkProvider>
+    <ClerkProvider>
+    <html lang="en">
+      <body className={`${inter.className}`}>
+      
           {/*header */}
 
           <Header />
           <main className="min-h-screen">{children}</main>
-          <Toaster richColors/>
+          <Toaster richColors />
 
           {/*footer */}
           <footer className="bg-blue-50 py-12">
             <div className="container mx-auto px-4 text-center text-gray-600">
               <p> Made by Doyal Saji </p>
             </div>
-          </footer>  
-          </ClerkProvider>        
-        </body>
-      </html>
+          </footer>
     
+      </body>
+    </html>
+    </ClerkProvider>
   );
 }
