@@ -9,9 +9,9 @@ export async function sendEmail({ to, subject, react }) {
       subject,
       react,
     });
-    return { succes: true, data };
+    return { success: true, data };
   } catch (error) {
     console.error("Failed to send email:", error);
-    return { succes: false, error };
+    return { success: false, error };
   }
 }
