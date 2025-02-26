@@ -88,11 +88,11 @@ export async function updateBudget(amount) {
 
     revalidatePath("/dashboard");
     return {
-      success: true,
+      succes: true,
       data: { ...budget, amount: budget.amount.toNumber() },
     };
   } catch (error) {
     console.error("Error updating budget:", error);
-    return { success: false, error: error.message };
+    return { succes: false, error: error.message };
   }
 }

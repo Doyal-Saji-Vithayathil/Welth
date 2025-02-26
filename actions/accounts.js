@@ -40,9 +40,9 @@ export async function updateDefaultAccount(accountId) {
     });
 
     revalidatePath("/dashboard");
-    return { success: true, data: serializeTransaction(account) };
+    return { succes: true, data: serializeTransaction(account) };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { succes: false, error: error.message };
   }
 }
 
@@ -131,8 +131,8 @@ export async function bulkDeleteTransactions(transactionIds) {
 
     revalidatePath("/dashboard");
     revalidatePath("/account/[id]");
-    return { success: true };
+    return { succes: true };
   } catch (error) {
-    return { success: false, error: error.message };
+    return { succes: false, error: error.message };
   }
 }

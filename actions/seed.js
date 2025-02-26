@@ -99,11 +99,11 @@ export async function seedTransactions() {
     });
 
     return {
-      success: true,
+      succes: true,
       message: `Created ${transactions.length} transactions`,
     };
   } catch (error) {
     console.error("Error seeding transactions:", error);
-    return { success: false, error: error.message };
+    return { succes: false, error: error.message };
   }
 }
