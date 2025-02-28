@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { seedTransactions } from "@/actions/seed";
 
 export async function GET(){

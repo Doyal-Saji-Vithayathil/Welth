@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 // app/api/test-recurring-transactions/route.js
 import { db } from "@/lib/prisma"; // Ensure that the Prisma client is set up
 

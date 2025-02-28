@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import { inngest } from "@/lib/inngest/client";
 import {
   checkBudgetAlert,
